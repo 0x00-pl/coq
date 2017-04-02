@@ -145,7 +145,7 @@ endif
 
 install-ide-files: #Please update $(COQIDEAPP)/Contents/Resources/ at the same time
 	$(MKDIR) $(FULLDATADIR)
-	$(INSTALLLIB) ide/coq.png ide/*.lang ide/coq_style.xml $(FULLDATADIR)
+	$(INSTALLLIB) ide/coq.png ide/*.lang ide/coq_style.xml ide/340.wav $(FULLDATADIR)
 	$(MKDIR) $(FULLCONFIGDIR)
 	if [ $(IDEINT) = QUARTZ ] ; then $(INSTALLLIB) ide/mac_default_accel_map $(FULLCONFIGDIR)/coqide.keys ; fi
 

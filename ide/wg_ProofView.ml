@@ -120,6 +120,17 @@ let rec flatten = function
   let inner = flatten l in
   List.rev_append lg inner @ rg
 
+let play_coq_sound () =
+  try
+    (* May raise Nof_found *)
+    let name = "340.wav" in
+    let chk d = Sys.file_exists (Filename.concat d name) in
+    let dir = List.find chk (Minilib.coqide_data_dirs ()) in
+    let filepath = Filename.concat dir name in
+    let _ = Sys.command ("aplay " ^ filepath) in
+    ()
+  with Not_found -> ()
+
 let display mode (view : #GText.view_skel) goals hints evars =
   let () = view#buffer#set_text "" in
   let width = Ideutils.textview_width view in
@@ -131,7 +142,8 @@ let display mode (view : #GText.view_skel) goals hints evars =
     let evars = match evars with None -> [] | Some evs -> evs in
     begin match (bg, shelved_goals,given_up_goals, evars) with
     | [], [], [], [] ->
-      view#buffer#insert "No more subgoals."
+      view#buffer#insert "No more subgoals.";
+      play_coq_sound ()
     | [], [], [], _ :: _ ->
       (* A proof has been finished, but not concluded *)
       view#buffer#insert "No more subgoals, but there are non-instantiated existential variables:\n\n";
