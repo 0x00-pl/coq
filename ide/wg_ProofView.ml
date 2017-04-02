@@ -142,8 +142,7 @@ let display mode (view : #GText.view_skel) goals hints evars =
     let evars = match evars with None -> [] | Some evs -> evs in
     begin match (bg, shelved_goals,given_up_goals, evars) with
     | [], [], [], [] ->
-      view#buffer#insert "No more subgoals.";
-      play_coq_sound ()
+      view#buffer#insert "No more subgoals."
     | [], [], [], _ :: _ ->
       (* A proof has been finished, but not concluded *)
       view#buffer#insert "No more subgoals, but there are non-instantiated existential variables:\n\n";

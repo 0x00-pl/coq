@@ -557,8 +557,26 @@ let send_to_coq_aux f sn =
 
 let send_to_coq f = on_current_term (send_to_coq_aux f)
 
+
+let play_coq_sound sn () =
+  let play_ () =
+    try
+      (* May raise Nof_found *)
+      let name = "340.wav" in
+      let chk d = Sys.file_exists (Filename.concat d name) in
+      let dir = List.find chk (Minilib.coqide_data_dirs ()) in
+      let filepath = Filename.concat dir name in
+      let _ = Sys.command ("aplay " ^ filepath) in
+      ()
+    with Not_found -> () in
+  (if sn.proof#buffer#get_text () = "" then
+     play_ ()
+   else
+     ());
+  Coq.return ()
+
 module Nav = struct
-  let forward_one _ = send_to_coq (fun sn -> sn.coqops#process_next_phrase)
+  let forward_one _ = send_to_coq (fun sn -> Coq.bind sn.coqops#process_next_phrase (play_coq_sound sn))
   let backward_one _ = send_to_coq (fun sn -> sn.coqops#backtrack_last_phrase)
   let goto _ = send_to_coq (fun sn -> sn.coqops#go_to_insert)
   let goto_end _ = send_to_coq (fun sn -> sn.coqops#process_until_end_or_error)
